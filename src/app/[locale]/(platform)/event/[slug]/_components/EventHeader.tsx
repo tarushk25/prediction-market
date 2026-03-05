@@ -1,8 +1,8 @@
 import type { Event } from '@/types'
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import EventBookmark from '@/app/[locale]/(platform)/event/[slug]/_components/EventBookmark'
 import EventShare from '@/app/[locale]/(platform)/event/[slug]/_components/EventShare'
+import EventIconImage from '@/components/EventIconImage'
 import { cn } from '@/lib/utils'
 
 interface EventHeaderProps {
@@ -32,16 +32,19 @@ export default function EventHeader({ event }: EventHeaderProps) {
         <span className="pointer-events-none absolute inset-x-4 bottom-0 border-b" />
       )}
       <div className="relative z-10 flex flex-1 items-center gap-2 lg:gap-4">
-        <Image
-          src={event.icon_url}
-          alt={event.creator || 'Market creator'}
-          width={64}
-          height={64}
+        <div
           className={cn(
             'shrink-0 rounded-sm transition-all ease-in-out dark:bg-foreground',
             scrolled ? 'size-10' : 'size-10 lg:size-16',
           )}
-        />
+        >
+          <EventIconImage
+            src={event.icon_url}
+            alt={event.creator || 'Market creator'}
+            sizes={scrolled ? '40px' : '(min-width: 1024px) 64px, 40px'}
+            containerClassName="size-full rounded-sm"
+          />
+        </div>
 
         <h1 className={cn(
           'leading-tight! font-semibold transition-all ease-in-out',
