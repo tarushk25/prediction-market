@@ -317,13 +317,9 @@ export function WalletFlow({
     handleWithdrawModalChange,
   } = useWithdrawFormState(onWithdrawOpenChange)
   const { pendingWithdrawals: visiblePendingWithdrawals, setPendingWithdrawals } = usePendingWithdrawals()
-  const { balance, isLoadingBalance } = useBalance()
   const hasDeployedDepositWallet = useHasDeployedDepositWallet(user)
   const depositWalletAddress = user?.deposit_wallet_address ?? null
-  const {
-    formattedUsdBalance: formattedDepositWalletUsdBalance,
-    isLoadingUsdBalance: isLoadingDepositWalletUsdBalance,
-  } = useLiFiWalletUsdBalance(depositWalletAddress, { enabled: depositOpen && Boolean(depositWalletAddress) })
+  const { balance, isLoadingBalance } = useBalance({ depositWalletAddress })
   const {
     formattedUsdBalance: formattedConnectedWalletUsdBalance,
     isLoadingUsdBalance: isLoadingConnectedWalletUsdBalance,
@@ -373,8 +369,8 @@ export function WalletFlow({
         view={depositView}
         onViewChange={setDepositView}
         onBuy={handleBuy}
-        depositWalletBalance={formattedDepositWalletUsdBalance}
-        isDepositWalletBalanceLoading={isLoadingDepositWalletUsdBalance}
+        depositWalletBalance={balance.text}
+        isDepositWalletBalanceLoading={isLoadingBalance}
         walletBalance={formattedConnectedWalletUsdBalance}
         isBalanceLoading={isLoadingConnectedWalletUsdBalance}
       />
