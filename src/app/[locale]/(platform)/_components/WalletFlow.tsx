@@ -318,15 +318,20 @@ export function WalletFlow({
   } = useWithdrawFormState(onWithdrawOpenChange)
   const { pendingWithdrawals: visiblePendingWithdrawals, setPendingWithdrawals } = usePendingWithdrawals()
   const { balance, isLoadingBalance } = useBalance()
+  const hasDeployedDepositWallet = useHasDeployedDepositWallet(user)
+  const depositWalletAddress = user?.deposit_wallet_address ?? null
   const {
-    formattedUsdBalance,
-    isLoadingUsdBalance,
+    formattedUsdBalance: formattedDepositWalletUsdBalance,
+    isLoadingUsdBalance: isLoadingDepositWalletUsdBalance,
+  } = useLiFiWalletUsdBalance(depositWalletAddress, { enabled: depositOpen && Boolean(depositWalletAddress) })
+  const {
+    formattedUsdBalance: formattedConnectedWalletUsdBalance,
+    isLoadingUsdBalance: isLoadingConnectedWalletUsdBalance,
   } = useLiFiWalletUsdBalance(user?.address, { enabled: depositOpen })
   const site = useSiteIdentity()
   const connectedWalletAddress = user?.address ?? null
   const { openTradeRequirements } = useTradingOnboarding()
 
-  const hasDeployedDepositWallet = useHasDeployedDepositWallet(user)
   const walletSendMessages = useMemo<WalletSendMessages>(() => ({
     depositWalletRequired: t('Set up your Deposit Wallet first.'),
     invalidRecipient: t('Enter a valid recipient address.'),
@@ -360,7 +365,7 @@ export function WalletFlow({
         open={depositOpen}
         onOpenChange={handleDepositModalChange}
         isMobile={isMobile}
-        walletAddress={user?.deposit_wallet_address ?? null}
+        walletAddress={depositWalletAddress}
         walletEoaAddress={user?.address ?? null}
         siteName={site.name}
         meldUrl={meldUrl}
@@ -368,8 +373,10 @@ export function WalletFlow({
         view={depositView}
         onViewChange={setDepositView}
         onBuy={handleBuy}
-        walletBalance={formattedUsdBalance}
-        isBalanceLoading={isLoadingUsdBalance}
+        depositWalletBalance={formattedDepositWalletUsdBalance}
+        isDepositWalletBalanceLoading={isLoadingDepositWalletUsdBalance}
+        walletBalance={formattedConnectedWalletUsdBalance}
+        isBalanceLoading={isLoadingConnectedWalletUsdBalance}
       />
       <WalletWithdrawModal
         open={withdrawOpen}
